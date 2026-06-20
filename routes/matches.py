@@ -97,20 +97,3 @@ def delete_match(match_id: str, db: Session = Depends(get_db)):
     db.commit()
     return {"ok": True}
 
-
-@router.patch("/{match_id}/stats")
-def update_stat(match_id: str, payload: StatUpdateIn, db: Session = Depends(get_db)):
-    m = db.query(Match).filter(Match.id == match_id).first()
-    if not m:
-        raise HTTPException(404, "Match introuvable")
-    st = next((s for s in m.sets if s.num == payload.setNum), None)
-    if not st:
-        raise HTTPException(404, "Set introuvable")
-    ps = next((p for p in st.stats if p.nom == payload.nom), None)
-    if ps:
-        ps.stats = payload.stats
-    else:
-        db.add(PlayerStat(set_id=st.id, nom=payload.nom, stats=payload.stats))
-    db.commit()
-    db.refresh(m)
-    return serialize_match(m)
