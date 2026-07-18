@@ -15,5 +15,4 @@ app.add_middleware(
 )
 
 app.include_router(matches.router, prefix="/matches", tags=["Matches"])
-app.include_router(exercices_routes.router)
 app.include_router(exercices_routes.router, prefix="/exercices", tags=["Exercices"])
